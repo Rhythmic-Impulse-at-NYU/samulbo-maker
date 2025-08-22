@@ -1,0 +1,2847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            position: fixed;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            margin: 0;
+            background-color: #57068c;
+            box-shadow: 0 4px 4px black; /* Add shadow to the header */
+        }
+        nav {
+            margin: 0;
+            padding: 0;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-direction: row;
+        }
+        nav li {
+            border: 6px black solid;
+            margin: 6px;
+            padding: 4px;
+            background-color: white
+        }
+
+        a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: black;
+            text-align: center;
+            font-weight: bold;
+            border: 4px black solid;
+            padding: 2px;
+
+            box-sizing: border-box;
+            width: 200px;
+            height: 100px;
+        }
+        a:hover {
+            background-color: gold;
+        }
+
+        /* UPLOAD */
+        #score-loader {
+            display: none;
+            /* position: absolute; */
+        }
+        #upload-score {
+            box-sizing: border-box;
+            height: 50px;
+            width: 200px;
+            border: black solid 4px;
+            border-bottom: black solid 2px;
+            display: flex;
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+        #upload-score:hover {
+            background-color: gold;
+        }
+
+        /* DOWNLOAD */ 
+        #download-button {
+            box-sizing: border-box;
+            height: 50px;
+            width: 200px;
+            border: black solid 4px;
+            border-top: black solid 2px;
+            /* border-top: black solid 2px; */
+            background: none;
+            padding: 0;
+            font-family: 'MaruBuri';
+            font-weight: bold;
+            font-size: 1em;
+        }
+        #download-button:hover {
+            background: gold;
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 256px;
+        }
+                #application-container {
+            border: black solid 8px;
+            padding: 8px;
+            /* background-color: white; */
+            width: auto;
+            height: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            display: flex;
+            flex-direction: column;
+        } 
+        #title {
+            width: 100%;
+            height: 64px;
+            border-top: black solid 6px;
+            border-left: black solid 6px;
+            border-right: black solid 6px;
+            box-sizing: border-box;
+            /* padding: 8px; */
+            margin: 0;
+            display: flex;
+            text-align: center;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+        }
+        #title:hover {
+            background-color: red;
+        }
+        .title-edit-enabled {
+            background-color: red;
+        }
+
+        #composition {
+            border: black solid 6px;
+            width: auto;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .quadGak-container {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: center;
+            width: auto;
+            height: auto;
+            border-bottom: 6px solid black;
+        }
+        .quadGak-container:last-child {
+            border-bottom: none;
+        }
+        .quadGak-editor {
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            justify-content: space-evenly;
+        }
+
+        .quadGak-editor button {
+            width: 100px;
+            height: 20%;
+            background: none;
+            border: none;
+            box-shadow: none;
+            border-bottom: 2px solid black;
+        }
+        .quadGak-container button:last-child {
+            border-bottom: none;
+        }
+        .quadGak-editor button:hover {
+            background-color: blue;
+            color: white;
+        }
+
+        /* Structure of Score */
+        .quadGak {
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: row-reverse;
+        }
+
+        /* Gak Numbering */
+        .gak-number-container {
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;  
+            justify-content: center; 
+            border-left: 2px solid black;
+            border-right: 2px solid black;
+            width: 50px;
+        }
+        .quadGak-container:last-child .gak-number-container {
+            border-bottom: none;
+        }
+        .quadGak-number {
+            width: 100%;
+            height: 100%;
+
+            display: flex;          
+            align-items: center;     
+            justify-content: center;    
+            text-align: center; 
+            pointer-events: none;
+
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;  
+            justify-content: center; 
+            border-left: 2px solid black;
+            border-right: 2px solid black;
+            width: 50px;
+        }
+
+        .gak-container {
+            display: flex;
+            flex-direction: row-reverse;
+        }
+        .lyric-container {
+            height: 30px;
+            /* border: 4px solid black; */
+        }
+        /* Instrument Name */
+        .name-container {
+            display: flex;
+            flex-direction: column;
+            border-left: 2px solid black;
+        }
+        .instrument-name {
+            box-sizing: border-box;
+            width: 100px;
+            height: 60px;
+            border-bottom: 2px black solid;
+            text-align: center;
+            align-items: center;
+            justify-content: center;
+            display: flex;
+        }
+
+        /* Jeonggan */
+        .quadJeonggan-container {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: center;
+        }
+        .quadJeonggan {
+            display: flex;
+            flex-direction: column;
+            border-left: 2px solid black;
+        }
+        .quadJeonggan:last-child {
+            border-left: none;
+        }
+        .jeong {
+            box-sizing: border-box;
+            border-bottom: 2px black solid;
+            width: 120px;
+            height: 60px;
+            align-content: center;
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: center;
+        }
+        .jeong:hover {
+            background-color: yellow;
+        }
+        .selected-jeong {
+            box-sizing: border-box;
+            border-bottom: 2px black solid;
+            width: 120px;
+            height: 60px;
+            background-color:yellow;
+            align-content: center;
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: center;
+        }
+        .daekang .jeong {
+            border-left: black solid 2px;
+        }
+        .daekang .selected-jeong {
+            border-left: black solid 2px;
+        }
+
+        /* Jeong Grid */
+        .displayOne {
+            width: 100%;
+            height: 100%;
+            align-items: center;
+        }
+        .displayTwo {
+            width: 50%;
+            height: 100%;
+            align-content: center;
+        }
+        .displayTwo-Upper .displayTwo-Lower{
+            width: 50%;
+            height: 100%;
+            align-content: center;
+        }
+        .displayThree {
+            width: 33.333%;
+            height: 100%;
+            align-content: center;
+        }
+        .displayFour {
+            width: 25%;
+            height: 100%;
+            align-content: center;
+        }
+
+        .drag {
+            background-color: cyan;
+        }
+    </style>
+    <style id="notation-web-css">
+        /* Universal Notations */
+        .rest-note {
+            /* Outer Triangle */
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;     /* Half of the base */
+            border-right: 8px solid transparent;    /* Half of the base */
+            border-bottom: 13.86px solid black;    /* Height of the equilateral triangle */
+            margin: auto;
+            display: block;
+            position: relative;
+        }
+
+        .rest-note::after {
+            /* Inner Triangle */
+            content: '';
+            position: absolute;
+            top: 2px;                               /* Slight offset from the top of the outer triangle */
+            left: -6px;                             /* Center the inner triangle horizontally */
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;     /* Half of the base for the inner triangle */
+            border-right: 6px solid transparent;    /* Half of the base for the inner triangle */
+            border-bottom: 10.39px solid white;     /* Height of the inner equilateral triangle */
+        }
+
+        .standard-note {
+            /* Swe: Kang, Jing: Jing, Janggu: Goong, Buk: Doong */
+            height: 32px;
+            width: 32px;
+            border: black solid 2px;
+            border-radius: 100%;
+            margin: auto;
+            padding: auto;
+            display: flex;
+            align-content: center;
+            justify-content: center;
+        }
+        .soft-note {
+            /* Swe: Jee, Jing: Jee, Janggu: Goong, Buk: Doo */
+            height: 16px;
+            width: 16px;
+            border: black solid 2px;
+            border-radius: 100%;
+            margin: auto;
+            display: flex;
+            align-content: center;
+            justify-content: center;
+        }
+        .mute-note {
+            /* Swe: Kkat, Jing: Jit, Buk: Dook*/
+            height: 32px;
+            width: 32px;
+            border: black solid 2px;
+            background-color: black;
+            border-radius: 100%;
+            margin: auto;
+            display: flex;
+            align-content: center;
+            justify-content: center;
+        }
+        /* 덩 궁 구궁 궁 구궁 덕 더 기덕 딱 */
+        .ttak-note {
+            /* 딱 for Janggu and Buk */
+            /* Future: denote ㄷ? */
+            text-align: center;
+            font-weight: bold;
+            align-content: center;
+            justify-content: center;
+        }
+        /* Swe Notations */
+        .half-mute-note {
+            height: 32px;
+            width: 32px;
+            border-style: solid;
+            border-color: black;
+            border-radius: 100%;
+            border-width: 2px;
+            margin: auto;
+            background: linear-gradient(to right,white 50%, black 50%) !important;
+        }
+
+        /* Janggu Notations */
+        .cross-note {
+            height: 32px;
+            width: 32px;
+            border-style: solid;
+            border-color: black;
+            border-radius: 100%;
+            border-width: 2px;
+            margin: auto;
+            background: linear-gradient(black 50%, white 50%) !important;
+        }
+        .double-cross-note {
+            height: 16px;
+            width: 16px;
+            border-style: solid;
+            border-color: black;
+            border-radius: 100%;
+            border-width: 2px;
+            margin: auto;
+            background: linear-gradient(black 50%, white 50%) !important;
+        }
+        .deok-note {
+            height: 32px;
+            width: 2px;
+            background-color: black;
+            margin: auto;
+        }
+        .deo-note{
+            width: 8px;
+            height: 8px;
+            border-radius: 100%;
+            background-color: black;
+            margin: auto;
+        }
+        .gideok-note {
+            height: 32px;
+            width: 6px;
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            justify-items: center;
+            position: relative;
+        }
+        .gideok-head{
+            height: 6px; /* Use even pixel values */
+            width: 6px;  /* Keep head size even to avoid subpixel rendering */
+            border-radius: 100%;
+            background-color: black;
+            margin-bottom: 2px; /* Create some space between head and body */
+        }
+        .gideok-body{
+            height: 22px;
+            width: 2px;
+            background-color: black;
+            margin-top: auto;
+        }
+    </style>
+    <style id="notation-reference-bar-css">
+        table {
+            background-color: white;
+            margin-left:auto;
+            margin-right: 2em;
+            margin-top: 1em;
+            height: 100px;
+        }
+        tr {
+            text-align: center;
+            vertical-align: middle;
+            display: flex;
+            flex-direction: row-reverse;
+        }
+        td {
+            width: 70px;
+            height: 50px;
+            border: 1px solid black;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #notation-reference-table {
+            border: 4px solid black;
+        }
+    </style>
+    <title>Samulnori Music Writer (Inlined JS)</title>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li>
+                    <label id = 'upload-score' for = 'score-loader'>UPLOAD SCORE</label> <input type = 'file' id = 'score-loader' accept = '.json'/>
+                    <button id = 'download-button'>DOWNLOAD SCORE</button>
+                </li>
+                <li><button id='notation-guide-button'>NOTATION GUIDE</button></li>
+                <li><button id='download-app'>DOWNLOAD APP</button></li>
+                <li><button id='preview-button'>PREVIEW</button></li>
+                <table id="notation-reference-table">
+                    <tbody id="notation-reference-body">
+                        <tr id="notations"></tr>
+                        <tr id="input-keys"></tr>
+                    </tbody>
+                </table>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div id="application-container">
+            <div id="title">Title</div>
+            <div id="composition"></div>
+        </div>
+    </main>
+    
+    <script id="global-js">
+        function getSelectedJeonggan() {
+            return document.querySelector('.selected-jeong');
+        }
+        function countNotes(jeonggan) {
+            return jeonggan.childElementCount;
+        }
+        function clearJeongganSelection() {
+            const selectedJeonggan = document.querySelectorAll('.selected-jeong');
+            selectedJeonggan.forEach(jeonggan => jeonggan.className = 'jeong');
+        }
+        function clearMouseSelection() {
+            const title = document.getElementById('title');
+            if (title && title.classList && title.classList.contains('title-edit-enabled')) {
+                title.classList.remove('title-edit-enabled');
+            }
+            const selectedJeonggan = document.querySelectorAll('.selected-jeong');
+            selectedJeonggan.forEach(jeonggan => jeonggan.className = 'jeong');
+        }
+    </script>
+
+    <script id="global-event-manager-js">
+        function attachEventListeners(element) {
+            if (element.classList && element.classList.contains('jeong')) {
+                element.addEventListener('click', (event) => { handleClick(event) });
+                element.addEventListener('contextmenu', (event) => { handleContextMenu(event) });
+            }
+            if (element.classList && element.classList.contains('quadJeonggan')) {
+                const jeonggan = element.querySelectorAll('.jeong');
+                jeonggan.forEach(jeong => {
+                    jeong.addEventListener('click', (event) => { handleClick(event) });
+                    jeong.addEventListener('contextmenu', (event) => { handleContextMenu(event) });
+                });
+            }
+        }
+
+        function handleClick(event) {
+            const jeonggan = event.currentTarget;
+
+            if (jeonggan.className === 'selected-jeong') {
+                jeonggan.className = 'jeong';
+            } else {
+                clearMouseSelection();
+                jeonggan.className = 'selected-jeong';
+                getInstrument();
+            }
+        }
+
+        function handleContextMenu(event) {
+            event.preventDefault();
+            const jeonggan = event.currentTarget;
+            const quadJeonggan = jeonggan.closest('.quadJeonggan');
+            if (quadJeonggan.classList.contains('daekang')) {
+                quadJeonggan.classList.remove('daekang');
+            } else {
+                quadJeonggan.classList.add('daekang');
+            }
+        }
+
+        function handleKeydown(event) {
+            const selectedJeonggan = document.querySelector('.selected-jeong');
+
+            if (!isTitleEditable && !selectedJeonggan) {
+                alert('No Jeonggan is currently selected');
+                return;
+            }
+
+            switch (event.key) {
+                case 'Backspace':
+                    if (countNotes(selectedJeonggan) === 0) {
+                        alert('The selected Jeonggan does not contain a note to delete');
+                    } else {
+                        deleteNote(selectedJeonggan);
+                    }
+                    break;
+
+                case 'ArrowLeft':
+                    event.preventDefault();
+                    handleArrowLeft();
+                    break;
+
+                case 'ArrowRight':
+                    event.preventDefault();
+                    handleArrowRight();
+                    break;
+
+                case 'ArrowUp':
+                    event.preventDefault();
+                    handleArrowUp();
+                    break;
+
+                case 'ArrowDown':
+                    event.preventDefault();
+                    handleArrowDown();
+                    break;
+
+                case 'Tab':
+                    handleTab(event);
+                    break;
+
+                default:
+                    let note;
+                    switch (getInstrument()) {
+                        case 'swe':
+                            note = writeSweNote(event);
+                            break;
+                        case 'jing':
+                            note = writeJingNote(event);
+                            break;
+                        case 'janggu':
+                            note = writeJangguNote(event);
+                            break;
+                        case 'buk':
+                            note = writeBukNote(event);
+                            break;
+                        default:
+                            note = -1;
+                            console.error('Error in identifying the instrument');
+                            break;
+                    }
+                    insertNote(selectedJeonggan, note);
+                    break;
+            }
+
+        }
+
+        function handleArrowLeft() {
+            const selectedJeonggan = getSelectedJeonggan();
+            const parentQuadJeonggan = selectedJeonggan.closest(".quadJeonggan");
+            const quadJeongganContainer = parentQuadJeonggan.parentElement;
+
+            if (parentQuadJeonggan.nextSibling) {
+                const nextQuadJeonggan = parentQuadJeonggan.nextSibling;
+                moveJeonggan(nextQuadJeonggan);
+            }
+            else {
+                if (getInstrument() === 'buk') {
+                    const parentQuadGakContainer = quadJeongganContainer.closest(".quadGak-container");
+                    const nextQuadGakContainer = parentQuadGakContainer.nextSibling;
+                    const targetJeong = nextQuadGakContainer.querySelector(".quadJeonggan").firstChild;
+                    clearMouseSelection();
+                    targetJeong.className = "selected-jeong";
+                }
+                else {
+                    const quadJeonggan = quadJeongganContainer.firstChild;
+                    const instrument = getInstrument();
+                    clearMouseSelection();
+
+                    if (instrument === 'swe') {
+                        quadJeonggan.children[1].className = "selected-jeong";
+                    }
+                    else if (instrument === 'jing') {
+                        quadJeonggan.children[2].className = "selected-jeong";
+                    }
+                    else if (instrument === 'janggu') {
+                        quadJeonggan.children[3].className = "selected-jeong";
+                    }
+                }
+            }
+        }
+        function handleArrowRight() {
+            const selectedJeonggan = getSelectedJeonggan();
+            const parentQuadJeonggan = selectedJeonggan.closest(".quadJeonggan");
+            const container = parentQuadJeonggan.parentElement;
+
+            if (parentQuadJeonggan.previousSibling) {
+                const previousQuadJeonggan = parentQuadJeonggan.previousSibling;
+                moveJeonggan(previousQuadJeonggan);
+            }
+            else {
+                if (getInstrument() === 'swe') {
+                    const parentQuadGak = container.closest(".quadGak-container");
+                    const previousQuadGak = parentQuadGak.previousSibling;
+                    const targetJeong = previousQuadGak.querySelector(".quadJeonggan:last-child").lastChild;
+                    clearMouseSelection();
+                    targetJeong.className = "selected-jeong";
+                }
+                else {
+                    const targetJeong = container.lastChild;
+                    if (getInstrument() === 'jing') {
+                        clearMouseSelection();
+                        targetJeong.children[0].className = "selected-jeong";
+                    }
+                    else if (getInstrument() === 'janggu') {
+                        clearMouseSelection();
+                        targetJeong.children[1].className = "selected-jeong";
+                    }
+                    else if (getInstrument() === 'buk') {
+                        clearMouseSelection();
+                        targetJeong.children[2].className = "selected-jeong";
+                    }
+                }
+            }
+        }
+        function handleArrowDown() {
+            const selectedJeonggan = getSelectedJeonggan();
+            if (getInstrument() === 'buk') {
+                const container = selectedJeonggan.closest(".quadGak-container");
+                const nextGak = container.nextSibling;
+                const jeonggans = Array.from(container.querySelectorAll(".quadJeonggan"));
+                const index = jeonggans.indexOf(selectedJeonggan.closest(".quadJeonggan"));
+
+                if (nextGak) {
+                    const targetJeong = nextGak.querySelector(".quadJeonggan-container").children[index].firstChild;
+                    clearMouseSelection();
+                    targetJeong.className = "selected-jeong";
+                }
+                else
+                    console.log("The selected Jeonggan is in the last Gak of the score!");
+            }
+            else {
+                const nextJeonggan = selectedJeonggan.nextSibling;
+                clearMouseSelection();
+                nextJeonggan.className = "selected-jeong";
+            }
+        }
+
+        function handleArrowUp() {
+            const selectedJeonggan = getSelectedJeonggan();
+            if (getInstrument() === 'swe') {
+                const container = selectedJeonggan.closest(".quadGak-container");
+                const previousGak = container.previousSibling;
+                const jeonggans = Array.from(container.querySelectorAll(".quadJeonggan"));
+                const index = jeonggans.indexOf(selectedJeonggan.closest(".quadJeonggan"));
+
+                if (previousGak) {
+                    const targetJeong = previousGak.querySelector(".quadJeonggan-container").children[index].lastChild;
+                    clearMouseSelection();
+                    targetJeong.className = "selected-jeong";
+                }
+                else
+                    console.log("The selected Jeonggan is in the first Gak of the score!");
+            }
+            else {
+                const previousJeonggan = selectedJeonggan.previousSibling;
+                clearMouseSelection();
+                previousJeonggan.className = "selected-jeong";
+            }
+        }
+
+        function moveJeonggan(quadJeonggan) {
+            const instrument = getInstrument();
+            clearMouseSelection();
+
+            if (instrument === 'swe')
+                quadJeonggan.children[0].className = "selected-jeong";
+            else if (instrument === 'jing')
+                quadJeonggan.children[1].className = "selected-jeong";
+            else if (instrument === 'janggu')
+                quadJeonggan.children[2].className = "selected-jeong";
+            else if (instrument === 'buk')
+                quadJeonggan.children[3].className = "selected-jeong";
+            else
+                console.error("Could not identify the Jeonggan's instrument");
+        }
+
+        function handleTab(event) {
+            event.preventDefault();
+            const instrument = getInstrument();
+            const nameToIndex = { swe: 1, jing: 2, janggu: 3, buk: 4 };
+            const index = nameToIndex[instrument] - 1;
+            // const index = Number(instrument) - 1;
+
+            const parentQuadJeonggan = getSelectedJeonggan().parentElement;
+
+            if (parentQuadJeonggan.classList.contains('daekang')) {
+                let currentQuadJeonggan = parentQuadJeonggan;
+                let copy = [];
+                while (currentQuadJeonggan) {
+                    clearMouseSelection();
+                    copy.unshift(currentQuadJeonggan.cloneNode(true));
+                    currentQuadJeonggan = currentQuadJeonggan.previousSibling;
+                }
+
+                let idx = 0;
+                currentQuadJeonggan = parentQuadJeonggan.nextSibling;
+
+                while (currentQuadJeonggan) {
+                    const next = currentQuadJeonggan.nextSibling;
+                    const paste = copy[idx].cloneNode(true);
+                    currentQuadJeonggan.replaceWith(paste);
+                    attachEventListeners(paste);
+                    idx++;
+                    if (idx === copy.length) idx = 0;
+                    currentQuadJeonggan = next;
+                }
+            }
+            else {
+                let current = parentQuadJeonggan;
+                let copy = [];
+                while (current) {
+                    clearMouseSelection();
+                    const jeonggan = current.children[index].cloneNode(true);
+                    if (jeonggan.hasChildNodes())
+                        copy.unshift(jeonggan);
+                    current = current.previousSibling;
+                }
+
+                let element = 0;
+                current = parentQuadJeonggan.nextSibling;
+                while (current) {
+                    current.children[index].replaceWith(copy[element].cloneNode(true));
+                    attachEventListeners(current.children[index]);
+                    element++;
+                    if (element === copy.length)
+                        element = 0;
+                    current = current.nextSibling;
+                }
+            }
+        }
+    </script>
+
+    <script id="jeonggan-js">
+        class Jeonggan {
+            constructor() {
+                this.element = document.createElement('div');
+                this.element.className = 'jeong';
+                this.element.addEventListener('click', handleClick);
+                this.element.addEventListener('contextmenu', handleContextMenu);
+            }
+        }
+    </script>
+    <style id="notation-guide-css">
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #57068c;
+            margin-bottom: 1em;
+
+        }
+        #instrument-selector {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+
+            width: 100%;
+        }
+        #instrument-selector button {
+            all: unset;
+            width: 100%;
+            /* margin: 1em; */
+            height: 100px;
+            text-align: center;
+            font-weight: bold;
+            color: white;
+            box-sizing: border-box;
+            font-size: 32px;
+        }
+        #instrument-selector button:hover {
+            background-color: red;
+        }
+        #download-button {
+            all: unset;
+            width: 100%;
+            /* margin: 1em; */
+            height: 100px;
+            text-align: center;
+            font-weight: bold;
+            color: white;
+            box-sizing: border-box;
+            font-size: 32px;
+        }
+        main {
+            justify-self: center;
+        }
+
+        /* Control */
+        #instruments {
+            display: flex;
+            justify-self: center;
+        }
+        .letter-size-container {
+            width: 7.5in;
+            height: 10in;
+            border: 8px black solid;
+        }
+        .letter-content-container {
+            margin: 4px;
+            width: 704px;
+            height: 944px;
+            border: 4px solid black;
+            box-sizing: content-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Paper Table */
+        .instrument-name {
+            width: 100%;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+
+            font-size: 20pt;
+            font-weight: bold;
+        }
+        .letter-content-container table {
+            border-collapse: collapse;
+            width: 100%;
+            border-top: 4px black solid;
+            border-bottom: 4px black solid;
+            padding: 0;
+        }
+        .letter-content-container thead {
+            width: 100%;
+            border-bottom: black solid 4px;
+        }   
+        .letter-content-container tr {
+            width: 100%;
+            /* border: 5px black solid; */
+        }
+        .letter-content-container th {
+            height: 33px;
+            border-right: 4px black solid
+        }
+        .letter-content-container tr th:first-child {
+            width: 70px;
+            /* border: 5px black solid; */
+        }
+        .letter-content-container tr th:nth-child(2) {
+            width: 100px;
+            /* border: 5px black solid; */
+        }
+        .letter-content-container tr th:nth-child(3) {
+            width: 120px;
+            /* border: 5px black solid; */
+        }
+        .letter-content-container th:last-child {
+            /* height: 33px; */
+            border-right: none;
+        }
+        .letter-content-container td {
+            height: 70px;
+            border-right: 4px black solid;
+            border-bottom: 4px black solid;
+            text-align: center;
+        }
+        .letter-content-container td:last-child {
+            border-right: none;
+        }
+
+
+        .notation .standard-note {
+            height: 32px; 
+            width: 32px;
+            border-width: 4px;
+        }
+        .notation .soft-note {
+            height: 16px; 
+            width: 16px;
+            border-width: 4px;
+        }
+        .notation .mute-note {
+            height: 32px; 
+            width: 32px;
+            border-width: 4px;
+        }
+        .notation .half-mute-note {
+            height: 32px; 
+            width: 32px;
+            border-width: 4px;
+        }
+        .notation .cross-note {
+            height: 32px; 
+            width: 32px;
+            border-width: 4px;
+        }
+        .notation .double-cross-note {
+            height: 16px; 
+            width: 16px;
+            border-width: 4px;
+        }
+        .notation .deok-note {
+            height: 32px;
+            width: 4px;
+        }
+        .notation .deo-note {
+            height: 8px;
+            width: 8px;
+        }
+        .notation .quad-deo-note {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .notation .quad-deo-note .deo-note {
+            margin: 4px;
+            height: 8px;
+            width: 8px;
+        }
+        .notation .gideok-note {
+            height: 40px;
+            width: 4px;
+        }
+        .notation .gideok-head{
+            height: 8px; 
+            width: 8px;  
+        }
+        .notation .gideok-body{
+            height: 28px;
+            width: 4px;
+        }
+        /* Ttak Note */
+        .notation .ttak-note {
+            height: 32px; 
+            width: 32px;
+            border-width: 4px;
+            border: black solid 2px;
+            border-radius: 100%;
+            margin: auto;
+            padding: auto;
+            display: flex;
+            align-content: center;
+            justify-content: center;
+            background-color: black;
+        }
+        .notation .ttak-note .soft-note {
+            height: 16px; 
+            width: 16px;
+            border-width: 4px;
+            background-color: white;
+            border-color: white;
+        }
+
+        /* Rest Note */
+        .notation .rest-note {
+            /* Outer Triangle */
+            position: relative;
+            width: 0;
+            height: 0;
+            border-left: 18px solid transparent;  /* Half of the base */
+            border-right: 18px solid transparent; /* Half of the base */
+            border-bottom: 32px solid black;      /* Height of the triangle */
+            margin: auto;
+            display: block;
+        }
+        .notation .rest-note::after {
+            /* Inner Triangle */
+            content: '';
+            position: absolute;
+            top: 5px;                             /* Align the inner triangle */
+            left: -14px;                          /* Center the inner triangle */
+            width: 0;
+            height: 0;
+            border-left: 14px solid transparent;  /* Half the base of the inner triangle */
+            border-right: 14px solid transparent; /* Half the base of the inner triangle */
+            border-bottom: 24px solid white;      /* Height of the inner triangle */
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+
+        /* Universal Notations */
+        .rest-note {
+            /* Outer Triangle */
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;     /* Half of the base */
+            border-right: 8px solid transparent;    /* Half of the base */
+            border-bottom: 13.86px solid black;    /* Height of the equilateral triangle */
+            margin: auto;
+            display: block;
+            position: relative;
+        }
+
+        .rest-note::after {
+            /* Inner Triangle */
+            content: '';
+            position: absolute;
+            top: 2px;                               /* Slight offset from the top of the outer triangle */
+            left: -6px;                             /* Center the inner triangle horizontally */
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;     /* Half of the base for the inner triangle */
+            border-right: 6px solid transparent;    /* Half of the base for the inner triangle */
+            border-bottom: 10.39px solid white;     /* Height of the inner equilateral triangle */
+        }
+
+        .standard-note {
+            /* Swe: Kang, Jing: Jing, Janggu: Goong, Buk: Doong */
+            height: 32px;
+            width: 32px;
+            border: black solid 2px;
+            border-radius: 100%;
+            margin: auto;
+            padding: auto;
+            display: flex;
+            align-content: center;
+            justify-content: center;
+        }
+        .soft-note {
+            /* Swe: Jee, Jing: Jee, Janggu: Goong, Buk: Doo */
+            height: 16px;
+            width: 16px;
+            border: black solid 2px;
+            border-radius: 100%;
+            margin: auto;
+            display: flex;
+            align-content: center;
+            justify-content: center;
+        }
+        .mute-note {
+            /* Swe: Kkat, Jing: Jit, Buk: Dook*/
+            height: 32px;
+            width: 32px;
+            border: black solid 2px;
+            background-color: black;
+            border-radius: 100%;
+            margin: auto;
+            display: flex;
+            align-content: center;
+            justify-content: center;
+        }
+        /* 덩 궁 구궁 궁 구궁 덕 더 기덕 딱 */
+        .ttak-note {
+            /* 딱 for Janggu and Buk */
+            /* Future: denote ㄷ? */
+            text-align: center;
+            font-weight: bold;
+            align-content: center;
+            justify-content: center;
+        }
+        /* Swe Notations */
+        .half-mute-note {
+            height: 32px;
+            width: 32px;
+            border-style: solid;
+            border-color: black;
+            border-radius: 100%;
+            border-width: 2px;
+            margin: auto;
+            background: linear-gradient(to right,white 50%, black 50%) !important;
+        }
+
+        /* Janggu Notations */
+        .cross-note {
+            height: 32px;
+            width: 32px;
+            border-style: solid;
+            border-color: black;
+            border-radius: 100%;
+            border-width: 2px;
+            margin: auto;
+            background: linear-gradient(black 50%, white 50%) !important;
+        }
+        .double-cross-note {
+            height: 16px;
+            width: 16px;
+            border-style: solid;
+            border-color: black;
+            border-radius: 100%;
+            border-width: 2px;
+            margin: auto;
+            background: linear-gradient(black 50%, white 50%) !important;
+        }
+        .deok-note {
+            height: 32px;
+            width: 2px;
+            background-color: black;
+            margin: auto;
+        }
+        .deo-note{
+            width: 8px;
+            height: 8px;
+            border-radius: 100%;
+            background-color: black;
+            margin: auto;
+        }
+        .gideok-note {
+            height: 32px;
+            width: 6px;
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            justify-items: center;
+            position: relative;
+        }
+        .gideok-head{
+            height: 6px; /* Use even pixel values */
+            width: 6px;  /* Keep head size even to avoid subpixel rendering */
+            border-radius: 100%;
+            background-color: black;
+            margin-bottom: 2px; /* Create some space between head and body */
+        }
+        .gideok-body{
+            height: 22px;
+            width: 2px;
+            background-color: black;
+            margin-top: auto;
+        }
+
+        @media print {
+            header {
+                display: none;
+            }
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            .page-break {
+                display: none;
+            }
+        }
+    </style>
+    <script id="notation-guide-style-handler-js">
+        const guideStyle = document.getElementById('notation-guide-css').innerHTML;
+        document.getElementById('notation-guide-css').innerHTML = '';
+    </script>
+    <script id="musical-notation-guide-js">
+        class MusicalNotationGuide {
+            #notationData = {
+                swe: { name: 'Kkwaenggwari Notation', notes: [ ['standard-note', '\uac31', 'Gaeng', 'Palm then Stroke'], ['soft-note', '\uc9c0', 'Ji', 'Stroke without Palming'], ['double-note', '\uadf8\ub791', 'Geurang', 'Palm and Double Stroke'], ['mute-note', '\uac2f', 'Gaet', 'Mute Stroke'], ['half-mute-note', '\uae68', 'Kkae', 'Stroke then Palm'], ['rest-note', '\uc27c', 'Rest', 'Rest'] ] },
+                jing: { name: 'Jing Notation', notes: [ ['standard-note', '\uc9d5', 'Jing', 'Regular Stroke'], ['soft-note', '\uc9c0', 'Ji', 'Soft Stroke'], ['mute-note', '\uc9d3', 'Jit', 'Mute Stroke'], ['rest-note', '\uc27c', 'Rest', 'Rest'] ] },
+                janggu: { name: 'Janggu Notation', notes: [ ['standard-note', '\uad81', 'Gung', 'Hit the center of the Gung-Pyeon with Gung-Chae'], ['deok-note', '\ub355', 'Deok', 'Strike the edge of the Yeol-Pyeon with Yeol-Chae'], ['deong-note', '\ub369', 'Deong', 'Gung and Deok at the same time'], ['double-note', '\uad6c\uad81', 'Gugung', 'Double Gung'], ['cross-note', '\uad81', 'Gung', 'Gung on the Yeol-Pyeon'], ['double-cross-note', '\uad6c\uad81', 'Gugung', 'Double Gung on the Yeol-Pyeon'], ['deo-note', '\ub354', 'Deo', 'Tap the center of the Yeol-Pyeon lightly with the tip of Yeol-Chae'], ['gideok-note', '\uae30\ub355', 'Gideok', 'Deo then Deok'], ['quad-deo-note', '\ub354\ub7ec\ub7ec\ub7ec', 'Deoreoreoreo', 'Quadruple Deo'], ['ttak-note', '\ub531', 'Ttak', 'Hit the brim of the Yeol-Pyeon'], ['rest-note', '\uc27c', 'Rest', 'Rest'] ] },
+                buk: { name: 'Buk Notation', notes: [ ['standard-note', '\ub465', 'Dung', 'Regular Stroke'], ['soft-note', '\ub450', 'Du', 'Strike with the opposite hand'], ['ttak-note', '\ub531', 'Dot', 'Hit the center of the Buk'], ['rest-note', '\uc27c', 'Rest', 'Rest'] ] }
+            };
+
+            constructor() {
+                document.getElementById('notation-guide-button').addEventListener('click', () => this.#open());
+                this.window = null;
+                this.sweSelector = null;
+                this.jingSelector = null;
+                this.jangguSelector = null;
+                this.bukSelector = null;
+                this.downloadButton = null;
+            }
+            #build() {
+                const guide = this.window;
+                guide.document.title = 'Musical Notation Guide';
+                guide.document.head.appendChild(guide.document.createElement('style'));
+                guide.document.head.querySelector('style').innerHTML = guideStyle;
+
+                const header = guide.document.createElement('header');
+                const instrumentSelector = guide.document.createElement('div');
+                instrumentSelector.id = 'instrument-selector';
+                const instruments = [
+                    { id: 'kkwaenggwari-selector', text: 'Kkwaenggwari' },
+                    { id: 'jing-selector', text: 'Jing' },
+                    { id: 'janggu-selector', text: 'Janggu' },
+                    { id: 'buk-selector', text: 'Buk' }
+                ];
+                instruments.forEach(instrument => {
+                    const button = guide.document.createElement('button');
+                    button.id = instrument.id;
+                    button.innerText = instrument.text;
+                    instrumentSelector.appendChild(button);
+                });
+
+                const downloader = guide.document.createElement('button');
+                downloader.id = 'downloader';
+                downloader.innerText = 'Download';
+                
+                header.appendChild(instrumentSelector);
+                header.appendChild(downloader);
+                guide.document.body.appendChild(header);
+
+                const main = guide.document.createElement('main');
+                const letterSizeContainer = guide.document.createElement('div');
+                letterSizeContainer.className = 'letter-size-container';
+                const letterContentContainer = guide.document.createElement('div');
+                letterContentContainer.className = 'letter-content-container';
+
+                const instrumentName = guide.document.createElement('div');
+                instrumentName.className = 'instrument-name';
+                instrumentName.innerText = 'INSTRUMENT';
+
+                const table = guide.document.createElement('table');
+                const thead = guide.document.createElement('thead');
+                thead.innerHTML = '<tr><th>Symbol</th><th>Korean Text</th><th>Roman Text</th><th>Description</th></tr>';
+                const tbody = guide.document.createElement('tbody');
+
+                table.appendChild(thead);
+                table.appendChild(tbody);
+
+                letterContentContainer.appendChild(instrumentName);
+                letterContentContainer.appendChild(table);
+                letterSizeContainer.appendChild(letterContentContainer);
+                main.appendChild(letterSizeContainer);
+                guide.document.body.appendChild(main);
+
+                instruments.forEach(instrument => {
+                    const button = guide.document.getElementById(instrument.id);
+                    if (button) {
+                        button.addEventListener('click', () => {
+                            if (instrument.id === 'kkwaenggwari-selector') this.#makeTable(this.#notationData.swe);
+                            else if (instrument.id === 'jing-selector') this.#makeTable(this.#notationData.jing);
+                            else if (instrument.id === 'janggu-selector') this.#makeTable(this.#notationData.janggu);
+                            else if (instrument.id === 'buk-selector') this.#makeTable(this.#notationData.buk);
+                        });
+                    }
+                });
+
+                // download/print handler
+                downloader.addEventListener('click', () => { this.window.print(); });
+
+                // initial table
+                this.#makeTable(this.#notationData.swe);
+            }
+            #open() {
+                this.window = window.open('', '_blank', 'width=900,height=700');
+                this.#build();
+                const popup = this.window;
+                popup.addEventListener('load', () => {
+                    this.sweSelector = popup.document.getElementById('kkwaenggwari-selector');
+                    if (this.sweSelector) this.sweSelector.addEventListener('click', () => this.#makeTable(this.#notationData.swe));
+                    this.jingSelector = popup.document.getElementById('jing-selector');
+                    if (this.jingSelector) this.jingSelector.addEventListener('click', () => this.#makeTable(this.#notationData.jing));
+                    this.jangguSelector = popup.document.getElementById('janggu-selector');
+                    if (this.jangguSelector) this.jangguSelector.addEventListener('click', () => this.#makeTable(this.#notationData.janggu));
+                    this.bukSelector = popup.document.getElementById('buk-selector');
+                    if (this.bukSelector) this.bukSelector.addEventListener('click', () => this.#makeTable(this.#notationData.buk));
+
+                    this.downloadButton = popup.document.getElementById('download-button');
+                    if (this.downloadButton) this.downloadButton.addEventListener('click', () => { this.window.print(); });
+                    this.#makeTable(this.#notationData.swe);
+                });
+            }
+
+            #makeTable(instrument) {
+                const instrumentName = this.window.document.querySelector('.instrument-name');
+                if (instrumentName) instrumentName.innerText = instrument.name;
+                const tableBody = this.window.document.querySelector('tbody');
+                if (!tableBody) return;
+                tableBody.innerHTML = '';
+
+                instrument.notes.forEach(note => {
+                    const row = this.#makeRow(note[0], note[1], note[2], note[3]);
+                    if (note[0] === 'double-note') {
+                        const noteElement = row.querySelector('.double-note');
+                        noteElement.className = 'standard-note';
+                        const innerNote = document.createElement('div');
+                        innerNote.className = 'soft-note';
+                        noteElement.appendChild(innerNote);
+                    }
+                    else if(note[0] === 'deong-note') {
+                        const noteElement = row.querySelector('.deong-note');
+                        noteElement.className = 'standard-note';
+                        const innerNote = document.createElement('div');
+                        innerNote.className = 'deok-note';
+                        noteElement.appendChild(innerNote);
+                    }
+                    else if(note[0] === 'double-cross-note') {
+                        const noteElement = row.querySelector('.double-cross-note');
+                        noteElement.className = 'standard-note';
+                        const innerNote = document.createElement('div');
+                        innerNote.className = 'double-cross-note';
+                        noteElement.appendChild(innerNote);
+                    }
+                    else if(note[0] === 'gideok-note') {
+                        const noteElement = row.querySelector('.gideok-note');
+                        const head = document.createElement('div');
+                        head.className = 'gideok-head';
+                        const body = document.createElement('div');
+                        body.className = 'gideok-body';
+                        noteElement.appendChild(head);
+                        noteElement.appendChild(body);
+                    }
+                    else if(note[0] === 'quad-deo-note') {
+                        const noteElement = row.querySelector('.quad-deo-note');
+                        for (let i = 0; i < 4; i++) {
+                            const deo = document.createElement('div');
+                            deo.className = 'deo-note';
+                            noteElement.appendChild(deo);
+                        }
+                    }
+                    else if(note[0] === 'ttak-note') {
+                        const noteElement = row.querySelector('.ttak-note');
+                        const innerNote = document.createElement('div');
+                        innerNote.className = 'soft-note';
+                        noteElement.appendChild(innerNote);
+                    }
+                    tableBody.append(row);
+                });
+            }
+            #makeRow(symbol, koreanText, romanText, noteDescription) {
+                const d = this.window.document;
+                const row = d.createElement('tr');
+                const notation = d.createElement('td');
+                notation.className = 'notation';
+                const note = d.createElement('div');
+                note.className = symbol;
+                notation.append(note);
+                row.append(notation);
+                const korean = d.createElement('td');
+                korean.className = 'korean-text';
+                korean.innerText = koreanText;
+                row.append(korean);
+                const roman = d.createElement('td');
+                roman.className = 'roman-text';
+                roman.innerText = romanText;
+                row.append(roman);
+                const description = d.createElement('td');
+                description.className = 'description';
+                description.innerText = noteDescription;
+                row.append(description);
+                return row;
+            }
+        }
+    </script>
+
+    <script id="notation-js">
+        /* Korean Notation Name -> CSS class */
+        const REST = 'rest-note';
+        const TTAK = 'ttak-note';
+
+        /* Basic Strokes */
+        const KANG = 'standard-note';
+        const JING = 'standard-note';
+        const GUNG = 'standard-note';
+        const DUNG = 'standard-note';
+
+        /* Janggu Exclusive Notations */
+        const DEONG = 'deong-note';
+        const DEOK = 'deok-note';
+        const C_GUNG = 'cross-note';
+        const C_GUGUNG = 'double-cross-note';
+        const DEO = 'deo-note';
+        const GIDEOK = 'gideok-note';
+        const DEOREOREOREO = 'quad-deo-note';
+
+        /* Soft Strokes */
+        const JI = 'soft-note';
+        const DU = 'soft-note';
+
+        /* Double Strokes */
+        const GEURANG = 'double-note';
+        const GUGUNG = 'double-note';
+
+        /* Mute Strokes */
+        const KKAT = 'mute-note';
+        const JIT = 'mute-note';
+        const DUK = 'mute-note';
+        const KKA = 'half-mute-note';
+
+        const NOTE_INPUT_KEYS = ['R', '1', '2', '3', 'Q', 'W', 'A', 'S', 'D'];
+
+        const NOTATION_ROW = document.getElementById("notations");
+        const KEY_ROW = document.getElementById("input-keys");
+        let instrument = null;
+
+        function getInstrument() {
+            const jeonggan = getSelectedJeonggan();
+            const quadJeonggan = jeonggan.closest(".quadJeonggan");
+            const jeongganArray = Array.from(quadJeonggan.children);
+
+            // let instrument;
+            switch (jeonggan) {
+                case jeongganArray[0]:
+                    instrument = 'swe';
+                    showSweNotation();
+                    break;
+                case jeongganArray[1]:
+                    instrument = 'jing';
+                    showJingNotation();
+                    break;
+                case jeongganArray[2]:
+                    instrument = 'janggu';
+                    showJangguNotation();
+                    break;
+                case jeongganArray[3]:
+                    instrument = 'buk';
+                    showBukNotation();
+                    break;
+            }
+
+            return instrument;
+        }
+
+        function showSweNotation() {
+            const notations = [REST, KANG, JI, GEURANG, KKAT, KKA];
+            
+            // Clear Table
+            NOTATION_ROW.innerHTML = '';
+            KEY_ROW.innerHTML = '';
+
+            for(let i = 0; i < notations.length; i++) {
+                const noteContainer = document.createElement("td");
+                noteContainer.className = "note-container";
+                NOTATION_ROW.append(noteContainer);
+                const note = document.createElement("div");
+                note.className = notations[i];
+                noteContainer.append(note);
+
+                // Special Notation Case
+                if(notations[i] === 'double-note') {
+                    note.className = 'standard-note';
+                    const innerNote = document.createElement('div');
+                    innerNote.className = 'soft-note';
+                    note.appendChild(innerNote);
+                }
+
+                const key = document.createElement("td");
+                key.className = "input-key";
+                key.innerText = NOTE_INPUT_KEYS[i];
+                KEY_ROW.append(key);
+            }
+        }
+        function showJingNotation() {
+            // Same as Swe since Jing takes up Buswe
+        }
+        function showJangguNotation() {
+            const notations = [REST, GUNG, DEOK, DEONG, C_GUNG, C_GUGUNG, DEO, GIDEOK, TTAK];  
+
+            // Clear Table
+            NOTATION_ROW.innerHTML = '';
+            KEY_ROW.innerHTML = '';
+
+            for(let i = 0; i < notations.length; i++) {
+                const noteContainer = document.createElement("td");
+                noteContainer.className = "note-container";
+                NOTATION_ROW.append(noteContainer);
+                const note = document.createElement("div");
+                note.className = notations[i];
+                noteContainer.append(note);
+
+                // Special Notation Case
+                if(notations[i] === 'deong-note') {
+                    createDeongNote(note);
+                }
+                if(notations[i] === 'double-note') {
+                    createDoubleNote(note);
+                }
+                if(notations[i] === 'double-cross-note') {
+                    createGugungNote(note);
+                }
+                if(notations[i] === 'gideok-note') {
+                    createGideokNote(note);
+                }
+                if(notations[i] === 'quad-deo-note') {
+                    createDeoreoreoreoNote(note);
+                }
+                if(notations[i] === 'ttak-note') {
+                    writeTtak(note);
+                }
+
+                const key = document.createElement("td");
+                key.className = "input-key";
+                key.innerText = NOTE_INPUT_KEYS[i];
+                KEY_ROW.append(key);
+            }
+        }
+
+        function showBukNotation(note) {
+            const notations = [REST, DUNG, DU, TTAK];
+
+            // Clear Table
+            NOTATION_ROW.innerHTML = '';
+            KEY_ROW.innerHTML = '';
+
+            for(let i = 0; i < notations.length; i++) {
+                const noteContainer = document.createElement("td");
+                noteContainer.className = "note-container";
+                NOTATION_ROW.append(noteContainer);
+                const note = document.createElement("div");
+                note.className = notations[i];
+                noteContainer.append(note);
+
+                // Special Notation Case
+                if(notations[i] === 'ttak-note') {
+                    writeTtak(note);
+                }
+
+                const key = document.createElement("td");
+                key.className = "input-key";
+                key.innerText = NOTE_INPUT_KEYS[i];
+                KEY_ROW.append(key);
+            }
+        }
+
+        function insertNote(jeonggan, newNote) {
+            const count = countNotes(jeonggan);
+            if (newNote === -1) {
+                console.log('Invalid Note');
+                return;
+            }
+
+            if (count === 0) {
+                jeonggan.appendChild(newNote);
+            } else if (count === 1) {
+                const upperDisplay = document.createElement('div');
+                const lowerDisplay = document.createElement('div');
+                upperDisplay.className = 'displayTwo';
+                lowerDisplay.className = 'displayTwo';
+
+                const upperNote = jeonggan.firstElementChild;
+                jeonggan.innerHTML = '';
+
+                jeonggan.append(upperDisplay, lowerDisplay);
+                upperDisplay.appendChild(upperNote);
+                lowerDisplay.appendChild(newNote);
+            } else if (count === 2) {
+                const [a, b] = [jeonggan.children[0].innerHTML, jeonggan.children[1].innerHTML];
+                jeonggan.innerHTML = '';
+
+                const upper = document.createElement('div');
+                const middle = document.createElement('div');
+                const lower = document.createElement('div');
+                upper.className = middle.className = lower.className = 'displayThree';
+
+                jeonggan.append(upper, middle, lower);
+                upper.innerHTML = a;
+                middle.innerHTML = b;
+                lower.appendChild(newNote);
+            } else if (count === 3 && newNote.className === 'deo-note') {
+                jeonggan.innerHTML = '';
+                for (let i = 0; i < 4; i++) {
+                    const div = document.createElement('div');
+                    div.className = 'displayFour';
+                    div.appendChild(newNote.cloneNode(true));
+                    jeonggan.appendChild(div);
+                }
+            } else {
+                console.log('Note Limit Reached');
+            }
+        }
+
+        function deleteNote(jeonggan) {
+            const count = countNotes(jeonggan);
+
+            if (count === 1) {
+                jeonggan.innerHTML = '';
+            } else if (count === 2) {
+                const note = jeonggan.firstElementChild.innerHTML;
+                jeonggan.innerHTML = note;
+            } else if (count === 3) {
+                const [a, b] = [jeonggan.children[0].innerHTML, jeonggan.children[1].innerHTML];
+                jeonggan.innerHTML = '';
+
+                const upper = document.createElement('div');
+                const lower = document.createElement('div');
+                upper.className = lower.className = 'displayTwo';
+
+                jeonggan.append(upper, lower);
+                upper.innerHTML = a;
+                lower.innerHTML = b;
+            } else if (count === 4) {
+                const [a, b, c] = [jeonggan.children[0].innerHTML, jeonggan.children[1].innerHTML, jeonggan.children[2].innerHTML];
+                jeonggan.innerHTML = '';
+
+                const upper = document.createElement('div');
+                const middle = document.createElement('div');
+                const lower = document.createElement('div');
+                upper.className = middle.className = lower.className = 'displayThree';
+
+                jeonggan.append(upper, middle, lower);
+                upper.innerHTML = a;
+                middle.innerHTML = b;
+                lower.innerHTML = c;
+            }
+        }
+        function writeSweNote(event) {
+            const note = document.createElement('div');
+            switch(event.key.toLowerCase()) {
+                case 'r': note.className = REST;
+                break;
+                case '1': note.className = KANG;
+                break;
+                case '2': note.className = JI;
+                break;
+                case '3': note.className = GEURANG;
+                break;
+                case 'q': note.className = KKAT;
+                break;
+                case 'w': note.className = KKA;
+                break;
+                default: console.log('Invalid Input');
+                return -1;
+            }
+
+            if (note.className === GEURANG) {
+                createDoubleNote(note);
+            }
+
+            return note;
+        }
+
+        function writeJingNote(event) {
+            const note = document.createElement('div');
+            switch(event.key.toLowerCase()) {
+                case 'r': note.className = REST;
+                break;
+                case '1': note.className = JING;
+                break;
+                case '2': note.className = JI;
+                break;
+                case '3': note.className = JIT;
+                break;
+                default: console.log('Invalid Input');
+                return -1;
+            }
+            return note;
+        }
+
+        function writeJangguNote(event) {
+            const note = document.createElement('div');
+            switch(event.key) {
+                case 'r': note.className = REST;
+                break;
+                case '3': note.className = DEONG;
+                break;
+                case '1': note.className = GUNG;
+                break;
+                case 'q': note.className = GUGUNG;
+                break;
+                case 'w': note.className = C_GUNG;
+                break;
+                case 'e': note.className = C_GUGUNG;
+                break;
+                case '2': note.className = DEOK;
+                break;
+                case 'a': note.className = DEO;
+                break;
+                case 's': note.className = GIDEOK;
+                break;
+                case 'd': note.className = TTAK;
+                break;
+                default: console.log('Invalid Input');
+                return -1;
+            }
+
+            if(note.className === DEONG) {
+                createDeongNote(note);
+            }
+            if(note.className === GUGUNG) {
+                createDoubleNote(note);
+            }
+            if(note.className === C_GUGUNG) {
+                createGugungNote(note);
+            }
+            if(note.className === GIDEOK) {
+                createGideokNote(note);
+            }
+            if(note.className === TTAK) {
+                writeTtak(note);
+            }
+
+            return note;
+        }
+
+        function writeBukNote(event) {
+            const note = document.createElement('div');
+            switch(event.key) {
+                case 'r': note.className = REST;
+                break;
+                case '1': note.className = DUNG;
+                break;
+                case '2': note.className = DU;
+                break;
+                case '3': note.className = DUK;
+                break;
+                case 'q': note.className = TTAK;
+                break;
+                default: console.log('Invalid Input');
+                return -1;
+            }
+            if(note.className === TTAK) {
+                writeTtak(note);
+            }
+            return note;
+        }
+
+        function createDoubleNote(note) {
+            note.className = 'standard-note';
+            const innerNote = document.createElement('div');
+            innerNote.className = 'soft-note';
+            note.appendChild(innerNote);
+        }
+
+        function createDeongNote(note) {
+            note.className = 'standard-note';
+            const innerNote = document.createElement('div');
+            innerNote.className = 'deok-note';
+            note.appendChild(innerNote);
+        }
+
+        function createGugungNote(note) {
+            note.className = 'standard-note';
+            const innerNote = document.createElement('div');
+            innerNote.className = 'double-cross-note';
+            note.appendChild(innerNote);
+        }
+
+        function createGideokNote(note) {
+            const head = document.createElement('div');
+            head.className = 'gideok-head';
+            const body = document.createElement('div');
+            body.className = 'gideok-body';
+            note.appendChild(head);
+            note.appendChild(body);
+        }
+
+        function createDeoreoreoreoNote(note) {
+            for (let j = 0; j < 4; j++) {
+                const deo = document.createElement('div');
+                deo.className = 'deo-note';
+                note.appendChild(deo);
+            }
+        }
+
+        function writeTtak(note) {
+            note.innerHTML = "딱";
+        }
+
+    </script>
+
+    <script id="quad-gak-js">
+        class QuadGak {
+            constructor(composition, container) {
+                this.composition = composition;
+                
+                if (container) {
+                    this.container = container;
+                    this.#enableQuadGakEditor(this.container);
+                    this.container.querySelectorAll('.quadJeonggan').forEach(qj => attachEventListeners(qj));
+                } else {
+                    this.container = document.createElement('div');
+                    this.container.className = 'quadGak-container';
+                    this.editor = this.#createQuadGakEditor();
+                    this.container.appendChild(this.editor);
+                    this.element = this.#createQuadGak();
+                    this.container.appendChild(this.element);
+                }
+            }
+
+            #createQuadGakEditor() {
+                const quadGakEditor = document.createElement('div');
+                quadGakEditor.className = 'quadGak-editor';
+
+                const buttons = [
+                    { text: 'Clear', className: 'clear-button', handler: this.#clear },
+                    { text: 'Delete', className: 'delete-button', handler: this.#delete },
+                    { text: 'Duplicate', className: 'duplicate-button', handler: this.#duplicate },
+                    { text: 'Copy', className: 'copy-button', handler: this.#copy },
+                    { text: 'Insert Copy', className: 'insert-copy-button', handler: this.#insertCopy },
+                    { text: 'Insert Blank', className: 'insert-blank-button', handler: this.#insertBlank },
+                    { text: 'Add New', className: 'add-new-button', handler: this.#addNew }
+                ];
+
+                buttons.forEach(button => {
+                    const buttonElement = document.createElement('button');
+                    buttonElement.className = button.className;
+                    buttonElement.innerText = button.text;
+                    buttonElement.addEventListener('click', button.handler.bind(this));
+                    quadGakEditor.appendChild(buttonElement);
+                });
+
+                return quadGakEditor;
+            }
+
+            #enableQuadGakEditor(quadGakContainer) {
+                if (quadGakContainer.querySelector('.clear-button'))
+                    quadGakContainer.querySelector('.clear-button').addEventListener('click', this.#clear.bind(this));
+                if (quadGakContainer.querySelector('.delete-button'))
+                    quadGakContainer.querySelector('.delete-button').addEventListener('click', this.#delete.bind(this));
+                if (quadGakContainer.querySelector('.duplicate-button'))
+                    quadGakContainer.querySelector('.duplicate-button').addEventListener('click', this.#duplicate.bind(this));
+                if (quadGakContainer.querySelector('.copy-button'))
+                    quadGakContainer.querySelector('.copy-button').addEventListener('click', this.#copy.bind(this));
+                if (quadGakContainer.querySelector('.insert-copy-button'))
+                    quadGakContainer.querySelector('.insert-copy-button').addEventListener('click', this.#insertCopy.bind(this));
+                if (quadGakContainer.querySelector('.insert-blank-button'))
+                    quadGakContainer.querySelector('.insert-blank-button').addEventListener('click', this.#insertBlank.bind(this));
+                if (quadGakContainer.querySelector('.add-new-button'))
+                    quadGakContainer.querySelector('.add-new-button').addEventListener('click', this.#addNew.bind(this));
+            }
+            
+            #createQuadGak() {
+                const quadGak = document.createElement('div');
+                quadGak.className = 'quadGak';
+
+                quadGak.appendChild(this.#createQuadGakNumber());
+                quadGak.appendChild(this.#createQuadGakComposition());
+
+                return quadGak;
+            }
+
+            #createQuadGakNumber() {
+                const quadGakNumber = document.createElement('div');
+                quadGakNumber.className = 'quadGak-number';
+                return quadGakNumber;
+            }
+
+            #createQuadGakComposition() {
+                const quadGakComposition = document.createElement('div');
+                quadGakComposition.className = 'quadGak-composition';
+
+                const gakContainer = this.#createGakContainer();
+                quadGakComposition.appendChild(gakContainer);
+
+                const lyricContainer = this.#createLyricContainer();
+                quadGakComposition.appendChild(lyricContainer);
+
+                return quadGakComposition;
+            }
+
+            #createGakContainer() {
+                const gakContainer = document.createElement('div');
+                gakContainer.className = 'gak-container';
+                gakContainer.appendChild(this.#createNameContainer());
+                gakContainer.appendChild(this.#createQuadJeongganContainer());
+                return gakContainer;
+            }
+
+            #createNameContainer() {
+                const names = document.createElement('div');
+                names.className = 'name-container';
+                const instrumentNames = ["Swe", "Jing", "Janggu", "Buk"];
+                instrumentNames.forEach(nameText => {
+                    const instrumentName = document.createElement('div');
+                    instrumentName.className = 'instrument-name';
+                    instrumentName.innerText = nameText;
+                    names.appendChild(instrumentName);
+                });
+                return names;
+            }
+
+            #createQuadJeongganContainer() {
+                const quadJeongganContainer = document.createElement('div');
+                quadJeongganContainer.className = 'quadJeonggan-container';
+                for (let i = 0; i < 12; i++) {
+                    const quadJeonggan = this.#createQuadJeonggan();
+                    quadJeongganContainer.appendChild(quadJeonggan);
+                }
+                return quadJeongganContainer;
+            }
+
+            #createLyricContainer() {
+                const lyricContainer = document.createElement('div');
+                lyricContainer.className = 'lyric-container';
+                return lyricContainer;
+            }
+            
+            #createQuadJeonggan() {
+                const quadJeonggan = document.createElement('div');
+                quadJeonggan.className = 'quadJeonggan'; 
+                for (let i = 0; i < 4; i++) {
+                    const jeong = this.#createJeonggan();
+                    quadJeonggan.appendChild(jeong);
+                }
+                return quadJeonggan;
+            }
+
+            #createJeonggan() {
+                const jeong = new Jeonggan();
+                return jeong.element;
+            }
+
+            /* Methods for QuadGak Manipulation */
+            #clear() {
+                clearMouseSelection();
+
+                this.container.querySelectorAll('.jeong').forEach(jeong => {
+                    jeong.innerHTML = '';
+                });
+
+                updateComposition();
+            }
+
+            #delete(event) {
+                clearMouseSelection();
+
+                // Get QuadGak Index
+                const index = parseInt(event.target.closest('.quadGak-container').querySelector('.quadGak-number').innerText)-1;
+                // Remove at the index
+                compositionArray.splice(index, 1);
+
+                updateComposition();
+            }
+
+            #duplicate(event) {
+                clearMouseSelection();
+
+                // Get the quadGak to duplicate
+                let copy = event.target.closest('.quadGak-container').cloneNode(true);
+                copy = new QuadGak(COMPOSITION, copy);
+                // Get QuadGak Index
+                const index = parseInt(event.target.closest('.quadGak-container').querySelector('.quadGak-number').innerText);
+                // Add the copy to the composition array
+                compositionArray.splice(index, 0, copy.container);
+
+                updateComposition();
+            }
+
+            #copy(event) {
+                clearMouseSelection();
+
+                const quadGak = event.target.closest('.quadGak-container');
+                gakCopy = quadGak.cloneNode(true);
+                gakCopyIndex = parseInt(event.target.closest('.quadGak-container').querySelector('.quadGak-number').innerText)-1;
+                console.log('QuadGak copied.');
+
+                updateComposition();
+            }
+
+            #insertCopy(event) {
+                clearMouseSelection();
+
+                if (gakCopy) {
+                    const destination = event.target.closest('.quadGak-container');
+                    const destinationIndex = parseInt(destination.querySelector('.quadGak-number').innerText)-1;
+
+                    const copy = gakCopy.cloneNode(true);
+                    copy.querySelectorAll('.jeong').forEach(jeong => { attachEventListeners(jeong); });
+                    this.#enableQuadGakEditor(copy);
+                    compositionArray.splice(destinationIndex, 0, copy);
+                } else {
+                    console.log('No QuadGak has been copied yet.');
+                }
+
+                updateComposition();
+            }
+
+            #insertBlank(event) {
+                clearMouseSelection();
+
+                // Get the index of insertion
+                const index = parseInt(event.target.closest('.quadGak-container').querySelector('.quadGak-number').innerText);
+                // Make a blank quadGak; this is created selectable
+                const blankQuadGak = new QuadGak(this.composition);
+                // Add the blank quadGak to the composition array, pushing the current quadGak to index+1
+                compositionArray.splice(index-1, 0, blankQuadGak.container);
+
+                updateComposition();
+            }
+
+            #addNew(event) {
+                clearMouseSelection();
+
+                // Get the index of insertion
+                const index = parseInt(event.target.closest('.quadGak-container').querySelector('.quadGak-number').innerText);
+                // Make a new quadGak; this is created selectable
+                const newQuadGak = new QuadGak(this.composition);
+                // Add the new quadGak to the composition array after the current quadGak
+                compositionArray.splice(index, 0, newQuadGak.container);
+
+                updateComposition();
+            }
+        }
+    </script>
+    <style id="score-css">
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        header {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            border-top: 10px black solid;
+            border-bottom: 10px black solid;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+        header:hover {
+            background-color: gold;
+        }
+        button {
+            width: 100%;
+            height: 50px;
+            padding: 0;
+            background: none;
+            border-top: 5px black solid;
+            border-bottom: 5px black solid;
+            /* outline: 5px black solid; */
+            font-size: 20pt;
+        }
+        @media print {
+            header {
+                display: none;
+            }
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            .page-break {
+                display: none;
+            }
+        }
+        .letter-size-container {
+            width: 7.5in;
+            height: 10in;
+            border: 8px black solid;
+        }
+        .score-container {
+            margin: 4px;
+            width: 704px;
+            height: 944px;
+            border: 4px solid black;
+            border-bottom: 4px solid black;
+            box-sizing: content-box;
+            display: flex;
+            flex-direction: row-reverse;
+        }
+        #score-title {
+            height: 100%;
+            width: 33.333%;
+            display: flex;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+            font-size: 20pt;
+            line-height: 50px;
+        }
+        #score-title:hover {
+            background-color: yellow;
+        }
+        #title-edit-enabled {
+            background-color: yellow;
+        }
+
+        /* Structure of Score */
+        .quadGak {
+            width: 33.333%;
+            border-right: black solid 4px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+        .quadGak:first-child {
+            border-right: none;
+        }
+
+        /* Gak Numbering */
+        .quadGak-number {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            font-size: 10pt;
+            display: flex;              /* Enable flexbox */
+            align-items: center;        /* Center content vertically */
+            justify-content: center;    /* Center content horizontally */
+            text-align: center; 
+            pointer-events: none;
+
+            box-sizing: border-box;
+            position: relative;
+            display: flex;
+            align-items: center;        
+            justify-content: center;    
+            border-bottom: 4px solid black;
+            width: 100%;
+            height: 25px;
+        }
+
+        /* Composition */
+        .quadGak-composition {
+            display: flex;
+            flex-direction: row;
+        }
+        .lyric-container {
+            width: 22.66px;
+            box-sizing: border-box;
+            border-left: 2px solid black;
+        }
+        .name-container {
+            display: flex;
+            flex-direction: row-reverse;
+        }
+        .instrument-name {
+            box-sizing: border-box;
+            width: 52px;
+            height: 20px;
+            font-size: 10pt;
+            border-right: 2px black solid;
+            border-bottom: 2px black solid;
+            text-align: center;
+            align-items: center;
+            justify-content: center;
+            display: flex;
+        }
+        .instrument-name:first-child {
+            border-right: none;
+        }
+
+        /* Jeonggan */
+        .quadJeonggan {
+            display: flex;
+            flex-direction: row-reverse;
+        }
+        .jeong {
+            box-sizing: border-box;
+            border-bottom: 2px black solid;
+            border-right: 2px black solid;
+            height: 75px;
+            width: 52px;
+            align-content: center;
+            display: flex;
+            flex-direction: column;
+        }
+        .jeong:first-child {
+            border-right:none;
+        }
+        .quadJeonggan:last-child .jeong {
+            border-bottom: none;
+        }
+
+        .daekang .jeong {
+            border-bottom: black solid 4px;
+        }
+
+        .empty-quadJeonggan {
+            display: flex;
+        }
+        .empty-quadJeonggan .jeong {
+            border-bottom: white;
+            border-right: white;
+        }
+        /* .empty-quadJeonggan .jeong:last-child {
+            width: 56px;
+            border-right: 4px black solid;
+        } */
+        .empty-quadJeonggan:first-child .jeong {
+            border-bottom: none;
+        }
+
+        /* Jeonggan Grid */
+        .displayOne {
+            width: 100%;
+            height: 100%;
+            align-content: center;
+        }
+        .displayTwo {
+            width: 100%;
+            height: 50%;
+            align-content: center;
+        }
+        .displayTwo-Upper .displayTwo-Lower{
+            width: 100%;
+            height: 50%;
+            align-content: center;
+        }
+        .displayThree {
+            width: 100%;
+            height: 33.333%;
+            align-content: center;
+        }
+        .displayFour {
+            width: 100%;
+            height: 25%;
+            align-content: center;
+        }
+        /* Universal Notations */
+        .rest-note {
+            /* Outer Triangle */
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;     /* Half of the base */
+            border-right: 8px solid transparent;    /* Half of the base */
+            border-bottom: 13.86px solid black;    /* Height of the equilateral triangle */
+            margin: auto;
+            display: block;
+            position: relative;
+        }
+
+        .rest-note::after {
+            /* Inner Triangle */
+            content: '';
+            position: absolute;
+            top: 2px;                               /* Slight offset from the top of the outer triangle */
+            left: -6px;                             /* Center the inner triangle horizontally */
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;     /* Half of the base for the inner triangle */
+            border-right: 6px solid transparent;    /* Half of the base for the inner triangle */
+            border-bottom: 10.39px solid white;     /* Height of the inner equilateral triangle */
+        }
+
+        .standard-note {
+            /* Swe: Kang, Jing: Jing, Janggu: Goong, Buk: Doong */
+            height: 14px; 
+            width: 14px;
+            border: black solid 2px;
+            border-radius: 100%;
+            margin: auto;
+            padding: auto;
+            display: flex;
+            align-content: center;
+            justify-content: center;
+        }
+        .hard-note {
+            height: 16px; 
+            width: 16px;
+            border: black solid 4px;
+            border-radius: 100%;
+            margin: auto;
+            display: flex;
+            align-content: center;
+            justify-content: center;
+        }
+        .soft-note {
+            /* Swe: Jee, Jing: Jee, Janggu: Goong, Buk: Doo */
+            height: 6px; 
+            width: 6px;
+            border: black solid 2px;
+            border-radius: 100%;
+            margin: auto;
+            display: flex;
+            align-content: center;
+            justify-content: center;
+        }
+        .mute-note {
+            /* Swe: Kkat, Jing: Jit, Buk: Dook*/
+            height: 14px; 
+            width: 14px;
+            border: black solid 2px;
+            background-color: black;
+            border-radius: 100%;
+            margin: auto;
+            display: flex;
+            align-content: center;
+            justify-content: center;
+        }
+        /* 덩 궁 구궁 궁 구궁 덕 더 기덕 딱 */
+        .ttak-note {
+            /* 딱 for Janggu and Buk */
+            /* Future: denote ㄷ? */
+            text-align: center;
+            font-weight: bold;
+            align-self: center;
+            justify-content: center;
+        }
+        /* Swe Notations */
+        .half-mute-note {
+            /* Half Mute */
+            height: 14px; 
+            width: 14px;
+            border-style: solid;
+            border-color: black;
+            border-radius: 100%;
+            border-width: 2px;
+            margin: auto;
+            background: linear-gradient(to right,white 50%, black 50%) !important;
+        }
+
+        /* Janggu Notations */
+        .cross-note {
+            height: 14px; 
+            width: 14px;
+            border-style: solid;
+            border-color: black;
+            border-radius: 100%;
+            border-width: 2px;
+            margin: auto;
+            background: linear-gradient(black 50%, white 50%) !important;
+        }
+        .double-cross-note {
+            height: 6px; 
+            width: 6px;
+            border-style: solid;
+            border-color: black;
+            border-radius: 100%;
+            border-width: 2px;
+            margin: auto;
+            background: linear-gradient(black 50%, white 50%) !important;
+        }
+        .deok-note {
+            height: 14px;
+            width: 2px;
+            background-color: black;
+            margin: auto;
+        }
+        .deo-note{
+            width: 4px;
+            height: 4px;
+            border-radius: 100%;
+            background-color: black;
+            margin: auto;
+        }
+        .gideok-note {
+            height: 16px;
+            width: 6px;
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            justify-items: center;
+            position: relative;
+        }
+        .gideok-head{
+            height: 4px; /* Use even pixel values */
+            width: 4px;  /* Keep head size even to avoid subpixel rendering */
+            border-radius: 100%;
+            background-color: black;
+            margin-bottom: 2px; /* Create some space between head and body */
+        }
+        .gideok-body{
+            height: 10px;
+            width: 2px;
+            background-color: black;
+            margin-top: auto;
+        }
+    </style>
+    <script id="score-css-handler-js">
+        const scoreStyle = document.getElementById('score-css').innerHTML;
+        console.log(scoreStyle);
+        document.getElementById('score-css').innerHTML = '';
+    </script>
+    <script id="score-js">
+        class Score {
+            constructor() {
+                this.array = [];
+
+                document.getElementById('preview-button').addEventListener('click', this.preview.bind(this));
+                document.getElementById('download-button').addEventListener('click', () => this.download());
+            }
+
+            #createTitleElement() {
+                const titleElement = document.createElement('div');
+                titleElement.id = 'score-title';
+                titleElement.innerText = TITLE.innerText;
+                return titleElement;
+            }
+
+            #build() {
+                clearJeongganSelection();
+
+                // Clear Score Array
+                this.array = [];
+
+                // Score Array[0]: title
+                this.array.push(this.#createTitleElement());
+
+                // Push QuadGak elements into Score Array
+                for (let i = 0; i < compositionArray.length; i++) {
+                    this.array.push(compositionArray[i].querySelector('.quadGak').cloneNode(true));
+                }
+
+                // Trim empty quadGaks from the built score array (skip title at index 0)
+                this.#trimScoreArray();
+
+                // Renumbering
+                for (let i = 1; i < this.array.length; i++) {
+                    this.array[i].querySelector('.quadGak-number').innerText = i;
+                }
+
+                // Make the array divisible by 3 to ensure each page gets 3 QuadGaks
+                while(this.array.length % 3 !== 0) {
+                    const filler = new QuadGak();
+                    filler.element.querySelector('.quadGak-number').innerText = this.array.length;
+                    this.array.push(filler.element);
+                }
+            }
+
+            #trimScoreArray() {
+                if (!this.array || !Array.isArray(this.array)) return;
+
+                // Start at 1 to skip title element
+                for (let i = 1; i < this.array.length; i++) {
+                    const entry = this.array[i];
+                    if (!entry || !entry.querySelectorAll) continue;
+
+                    let isQuadGakEmpty = true;
+                    const jeonggan = entry.querySelectorAll('.jeong');
+                    jeonggan.forEach(jeong => { if (jeong.hasChildNodes()) isQuadGakEmpty = false; });
+
+                    if (isQuadGakEmpty && this.array.length > 1) {
+                        this.array.splice(i, 1);
+                        i--;
+                    }
+                }
+            }
+
+            preview() {
+                this.#build();
+                // Open Preview Window
+                const printer = window.open('', '_blank', 'width=1000,height=1000');
+                printer.document.title = 'Score Printer';
+                // printer.document.createElement('style').innerHTML = scoreStyle;
+                printer.document.head.appendChild(printer.document.createElement('style'));
+                printer.document.head.querySelector('style').innerHTML = scoreStyle;
+
+                const header = printer.document.createElement('header');
+                const printButton = printer.document.createElement('button');
+                printButton.id = 'print-button';
+                printButton.innerText = 'PRINT';
+                header.appendChild(printButton);
+                printer.document.body.appendChild(header);
+
+                const main = printer.document.createElement('main');
+                printer.document.body.appendChild(main);
+
+                    for (let i = 0; i < this.array.length; i += 3) {
+                        // Letter Size Container
+                        const letterSizeContainer = this.#createLetterSizeContainer(printer);
+                        main.appendChild(letterSizeContainer);
+
+                        // Score Container
+                        const scoreContainer = this.#createScoreContainer(printer);
+                        letterSizeContainer.appendChild(scoreContainer);
+
+                        // Insert 3 quadGak per page (create empty placeholders in preview document if missing)
+                        if (!this.array[i]) this.array[i] = printer.document.createElement('div');
+                        if (!this.array[i+1]) this.array[i+1] = printer.document.createElement('div');
+                        if (!this.array[i+2]) this.array[i+2] = printer.document.createElement('div');
+
+                        scoreContainer.replaceChildren(this.array[i], this.array[i+1], this.array[i+2]);
+                        this.#cleanJeonggan(scoreContainer);
+
+                        // Page Break for spacing
+                        const pageBreak = this.#createPageBreak(printer);
+                        main.appendChild(pageBreak);
+                    }
+
+                    // Attach download handler in the preview that calls this.download with the preview window
+                    printer.document.getElementById('print-button').addEventListener('click', () => printer.print());
+                    // if (dl) dl.addEventListener('click', () => this.download(printer));
+            }
+
+            #createLetterSizeContainer(window) {
+                const element = window.document.createElement('div');
+                element.className = 'letter-size-container';
+                return element;
+            }
+
+            #createScoreContainer(window) {
+                const element = window.document.createElement('div');
+                element.className = 'score-container';
+                return element;
+            }
+
+            #cleanJeonggan(scoreContainer) {
+                for (let i = 0; i < 3; i++) {
+                    const child = scoreContainer.children[i];
+                    if (!child) continue;
+                    const quadGak = child.querySelectorAll('.quadJeonggan');
+                    if (!quadGak || quadGak.length === 0) continue;
+                    this.#markDaekang(quadGak);
+                }
+            }
+
+            #markDaekang(quadGak) {
+                if (!quadGak || quadGak.length === 0) return;
+
+                // If the last expected quad exists and is already marked, skip
+                if (quadGak.length >= 12 && quadGak[11] && quadGak[11].classList && quadGak[11].classList.contains("daekang")) {
+                    return;
+                }
+
+                for (let i = quadGak.length - 1; i >= 0; i--) {
+                    let blank = true;
+
+                    // Check each of the 4 Jeonggan in each QuadJeonggan
+                    for (let j = 0; j < 4; j++) {
+                        const jeonggan = quadGak[i].children[j];
+                        if (!jeonggan) continue;
+                        const text = (jeonggan.innerHTML || '').trim();
+                        if (text !== '') {
+                            blank = false;
+                        }
+                    }
+                    if (quadGak[i].classList.contains("daekang")) {
+                        blank = false;
+                    }
+
+                    if (blank) {
+                        quadGak[i].classList.replace('quadJeonggan', 'empty-quadJeonggan');
+                    }
+                    else {
+                        if (quadGak[i].classList.contains("empty-quadJeonggan")) {
+                            // If it was previously empty but now has content, change back to quadJeonggan
+                            quadGak[i].classList.replace('empty-quadJeonggan', 'quadJeonggan');
+                        }
+                        quadGak[i].classList.add('daekang');
+                        break;
+                    }
+                }
+            }
+
+            #createPageBreak(window) {
+                const pageBreak = window.document.createElement('div');
+                pageBreak.className = 'page-break';
+                return pageBreak;
+            }
+
+            download(previewWindow = window) {
+                // Save the quartets in Score View as a JSON File
+                const data = [];
+                this.array.forEach(quadGak => data.push(this.saveAsJSON(quadGak)));
+
+                // Serialize Data File
+                const json = JSON.stringify(data, null, 2);
+                const blob = new Blob([json], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+
+                // Set File Name
+                let fileName = 'score.json';
+                try {
+                    const titleText = this.title && typeof this.title.getTitleText === 'function' ? this.title.getTitleText().trim() : '';
+                    if (titleText) fileName = `${titleText}.json`;
+                } catch (e) { /* ignore */ }
+
+                // Download Data File
+                const link = previewWindow.document.createElement('a');
+                link.href = url;
+                link.download = fileName;
+                previewWindow.document.body.appendChild(link);
+                link.click();
+                previewWindow.document.body.removeChild(link);
+            }
+
+
+            cleanQuadJeonggan() {
+                const emptyQuadJeonggan = this.composition.container.querySelectorAll('.empty-quadJeonggan');
+                if (emptyQuadJeonggan) {
+                    emptyQuadJeonggan.forEach(element => {
+                        element.classList.replace('empty-quadJeonggan', 'quadJeonggan');
+                    });
+                }
+            }
+        }
+    </script>
+
+    <script id="save-page-js">
+        function nameFile() {
+            try {
+                const t = document.getElementById('title') && document.getElementById('title').innerText.trim();
+                if (t && t.length) return t.replace(/[\\/:*?"<>|]/g, '_') + '.html';
+            } catch (_) {}
+            return 'samulnori-export.html';
+        }
+
+        function serialize(element) {
+            const text = Array.from(element.childNodes).filter(node => node.nodeType === Node.TEXT_NODE).map(node => node.textContent.trim()).join('');
+            const data = {tag: element.tagName, classList: Array.from(element.classList), text: text, children: []};
+            if(element.hasChildNodes()) {
+                Array.from(element.children).forEach(child => {data.children.push(serialize(child));});
+            }
+            return data;
+        }
+
+        function deserialize(object) {
+            // Make HTML
+            const element = document.createElement(object.tag);
+
+            // Assign Classes
+            element.classList.add(...object.classList);
+
+            // Assign Text
+            if (object.text) {
+                element.appendChild(document.createTextNode(object.text));
+            }
+
+            // Recursion
+            object.children.forEach(child => {
+                const childElement = deserialize(child);
+                element.appendChild(childElement);
+            });
+
+            return element;
+        }
+
+        function load(data) {
+            // Clear Composition
+            compositionArray = [];
+
+            // Load title text from the first element in the JSON
+            const json = JSON.parse(data);
+            TITLE.innerText = json[0].title;
+
+            // Load composition with musical notes
+            for (let i = 1; i < json.length; i++) {
+                const quadGakContainer = deserialize(json[i]);
+                const quadGak = new QuadGak(COMPOSITION, quadGakContainer);
+                compositionArray.push(quadGak.container);
+                console.log(i);
+            }
+
+            updateComposition();
+        }
+
+        function save() {
+            clearMouseSelection();
+
+            // If Score is present, get a JSON snapshot and embed it into the document
+            let jsonArray = [];
+            // Save Title
+            jsonArray.push({ title: TITLE.innerText });
+            // Save Composition
+            compositionArray.forEach(c => { jsonArray.push(serialize(c)); });
+            // Save JSON Array
+            document.getElementById('composition-json').textContent = JSON.stringify(jsonArray);
+
+            console.log(document.getElementById('composition-json'));
+            
+            // Restore Styles
+            document.getElementById('score-css').innerHTML = scoreStyle;
+            document.getElementById('notation-guide-css').innerHTML = guideStyle;
+
+            const doctype = '<!DOCTYPE html>\n';
+            const html = doctype + document.documentElement.outerHTML;
+            const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = nameFile();
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(url), 10000);
+
+            document.getElementById('score-css').innerHTML = '';
+            document.getElementById('notation-guide-css').innerHTML = '';
+        }
+
+        const btn = document.getElementById('download-app');
+        if (btn) btn.addEventListener('click', (e) => { save(); });
+    </script>
+
+    <!-- Space for Storing Composition as JSON-->
+    <script id="composition-json"></script>
+
+    <!-- Composition -->
+    <script id="composition-js">
+        const COMPOSITION = document.getElementById('composition');
+        let compositionArray = [];
+        let gakCopy = null;
+        let gakCopyIndex = null;
+
+        function initializeComposition() {
+            for (let i = 0; i < 10; i++) {
+                addQuadGak();
+            }
+        }
+
+        function updateComposition() {
+            COMPOSITION.innerHTML = '';
+            if (compositionArray.length === 0) {
+                addQuadGak();
+            } else {
+                compositionArray.forEach((quadGak, index) => {
+                    if (quadGak) {
+                        quadGak.querySelector('.quadGak-number').innerText = index + 1;
+                        COMPOSITION.appendChild(quadGak);
+                    }
+                });
+            }
+        }
+
+        function addQuadGak() {
+            const quadGak = new QuadGak();
+            compositionArray.push(quadGak.container);
+            updateComposition();
+        }
+    </script>
+
+    <!-- Title -->
+    <script id="title-js">
+        const TITLE = document.getElementById('title');
+        TITLE.addEventListener('click', toggleTitleKeyHandler);
+        let isTitleEditable = false;
+
+        function toggleTitleKeyHandler() {
+            isTitleEditable = !isTitleEditable;
+            if (isTitleEditable) {
+                enableTitling();
+            } else {
+                disableTitling();
+            }
+        }
+        function enableTitling() {
+            clearMouseSelection();
+
+            TITLE.classList.add('title-edit-enabled');
+            if (TITLE.innerText === 'Title') {
+                TITLE.innerText = '';
+            }
+            document.addEventListener('keydown', handleTitleKeys);
+        }
+        function disableTitling() {
+            TITLE.classList.remove('title-edit-enabled');
+            if (TITLE.innerText.trim() === '') { 
+                TITLE.innerText = 'Title'; 
+            }
+            document.removeEventListener('keydown', handleTitleKeys);
+        }
+        function handleTitleKeys(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                disableTitling();
+            } else if (event.key === 'Backspace') {
+                event.preventDefault();
+                TITLE.innerText = TITLE.innerText.slice(0, -1);
+            } else if (event.key.length === 1) {
+                event.preventDefault();
+                TITLE.innerText += event.key;
+            }
+        }
+    </script>
+
+    <script id="application-js">
+        const DATA = document.getElementById('composition-json');
+        class Application {
+            constructor() { this.initialize(); }
+
+            initialize() {
+                initializeComposition();
+                this.musicalNotationGuide = new MusicalNotationGuide();
+                this.score = new Score();
+                
+                if (DATA.textContent) {
+                    load(DATA.textContent);
+                }
+ 
+                document.addEventListener('keydown', handleKeydown);
+            }
+        }
+    </script>
+
+    <script id="main-js">
+        document.addEventListener('DOMContentLoaded', () => { const app = new Application(); });
+    </script>
+</body>
+</html>
